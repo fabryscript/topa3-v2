@@ -12,8 +12,9 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import MenuBuilder from './menu';
-import { resolveHtmlPath } from './util';
+import { getProjectsFileName, resolveHtmlPath } from './util';
 
 class AppUpdater {
   constructor() {
@@ -25,10 +26,33 @@ class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
+// create a new projects.json file if it doesn't already exist
+const projectsFilePath = app.getPath('documents') + getProjectsFileName();
+const projectsFileExists = existsSync(projectsFilePath);
+const DEFAULT_PROJECTS_FILE_CONTENT = JSON.stringify([]);
+const readProjectsFile = () => readFileSync(projectsFilePath).toString();
+const writeToProjectsFile = (content: string) =>
+  writeFileSync(projectsFilePath, Buffer.from(content));
+
+if (!projectsFileExists) writeToProjectsFile(DEFAULT_PROJECTS_FILE_CONTENT);
+
+ipcMain.handle('retrieve-projects', (e) => {
+  e.preventDefault();
+  console.log('fire retrieve-projects');
+  return readProjectsFile();
+});
+
+ipcMain.handle('new-project', async (_, file: string) => {
+  const inputFile: { path: string; content: string; name: string } =
+    JSON.parse(file);
+  const projectsFile = JSON.parse(readProjectsFile());
+  const payload = [...projectsFile, inputFile];
+  try {
+    writeToProjectsFile(JSON.stringify(payload));
+    return 'ok';
+  } catch (error) {
+    return error;
+  }
 });
 
 if (process.env.NODE_ENV === 'production') {
