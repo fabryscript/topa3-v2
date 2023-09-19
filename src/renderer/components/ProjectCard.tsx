@@ -21,13 +21,13 @@ function ProjectCard({ project }: { project: ProjectFile }) {
           type="button"
           className="startbutton flex-1 p-5 flex justify-center items-center"
         >
-          <AiOutlinePlayCircle size="40px" />
+          <AiOutlinePlayCircle size="30px" />
         </button>
         <button
           type="button"
           className="settingsbutton flex-1 p-5 flex justify-center items-center"
         >
-          <FiSettings size="40px" />
+          <FiSettings size="30px" />
         </button>
       </div>
     </div>
