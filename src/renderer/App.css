@@ -1,3 +1,71 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  p,
+  a,
+  small {
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  .neomorphistic {
+    border-radius: 50px;
+    background: linear-gradient(145deg, #121212, #0f0f0f);
+    box-shadow:
+      25px 25px 46px #070707,
+      -25px -25px 46px #1b1b1b;
+    transition: all 200ms ease-in-out;
+  }
+  .neomorphistic:hover {
+    scale: 1.02;
+  }
+  .startbutton {
+    border-radius: 25px;
+    background: linear-gradient(145deg, #59dc2a, #4bb923);
+    transition: all 300ms ease-in-out;
+  }
+  .startbutton:hover {
+    box-shadow:
+      10px 10px 500px #47af21,
+      -10px -10px 500px #5fed2d;
+  }
+  .settingsbutton {
+    border-radius: 25px;
+    background: linear-gradient(145deg, #898989, #737373);
+
+    transition: all 300ms ease-in-out;
+  }
+  .settingsbutton:hover {
+    box-shadow:
+      10px 10px 500px #6d6d6d,
+      -10px -10px 500px #939393;
+  }
+  .confirmbutton,
+  .undobutton {
+    transition: all 350ms ease-in-out;
+  }
+  .confirmbutton:hover {
+    scale: 1.1;
+    box-shadow: inset 0 0 1.5em #44a1c9;
+  }
+  .confirmbutton:active {
+    scale: 0.9;
+    box-shadow: inset 0 0 1.5em #44a1c9;
+  }
+  .undobutton:hover {
+    scale: 1.1;
+    box-shadow: inset 0 0 1.5em #c23838;
+  }
+  .undobutton:active {
+    scale: 0.9;
+    box-shadow: inset 0 0 1.5em #c23838;
+  }
+}
