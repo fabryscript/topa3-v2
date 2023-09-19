@@ -1,3 +1,4 @@
+import FloatingTerminalButton from '../components/FloatingTerminalButton';
 import ProjectCard from '../components/ProjectCard';
 import { INTERNAL_TOPA3_NEW_PROJECT_CARD } from '../utils/consts';
 import useRetrieveProjects from '../utils/useRetrieveProjects';
@@ -5,7 +6,7 @@ import useRetrieveProjects from '../utils/useRetrieveProjects';
 function Dashboard() {
   const { projects } = useRetrieveProjects();
   return (
-    <div className="text-white flex flex-col p-10 justify-center gap-10">
+    <div className="relative text-white flex flex-col p-10 justify-center gap-10">
       <div>
         <h1 className="text-4xl font-semibold">Benvenuto nella Dashboard.</h1>
         <h2 className="text-2xl mt-2 font-semibold opacity-50">
@@ -29,6 +30,7 @@ function Dashboard() {
           }}
         />
       </div>
+      <FloatingTerminalButton />
     </div>
   );
 }
