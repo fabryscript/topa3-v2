@@ -1,13 +1,6 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-
-function Hello() {
-  return (
-    <div>
-      <p className="text-4xl">Ciao!</p>
-    </div>
-  );
-}
+import Hello from './Hello';
 
 export default function App() {
   return (
