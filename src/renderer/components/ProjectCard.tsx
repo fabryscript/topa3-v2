@@ -1,13 +1,8 @@
 import { AiOutlinePlayCircle } from 'react-icons/ai';
 import { FiSettings } from 'react-icons/fi';
 import { ProjectFile } from '../types';
-import { INTERNAL_TOPA3_NEW_PROJECT_CARD } from '../utils/consts';
-import UploadBox from './UploadBox';
 
 function ProjectCard({ project }: { project: ProjectFile }) {
-  if (project.name === INTERNAL_TOPA3_NEW_PROJECT_CARD) {
-    return <UploadBox />;
-  }
   return (
     <div
       key={project.name}
