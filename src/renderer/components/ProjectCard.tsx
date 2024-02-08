@@ -15,6 +15,9 @@ function ProjectCard({ project }: { project: ProjectFile }) {
         <button
           type="button"
           className="startbutton flex-1 p-5 flex justify-center items-center"
+          onClick={() => {
+            window.electron.ipcRenderer.invoke('start-project', [project]);
+          }}
         >
           <AiOutlinePlayCircle size="30px" />
         </button>
