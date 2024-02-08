@@ -13,8 +13,14 @@ import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { spawn } from 'child_process';
 import MenuBuilder from './menu';
-import { getProjectsFileName, resolveHtmlPath } from './util';
+import {
+  getProjectFolderPath,
+  getProjectsFileName,
+  resolveHtmlPath,
+} from './util';
+import { ProjectFile } from '../renderer/types';
 
 class AppUpdater {
   constructor() {
@@ -25,35 +31,6 @@ class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
-
-// create a new projects.json file if it doesn't already exist
-const projectsFilePath = app.getPath('documents') + getProjectsFileName();
-const projectsFileExists = existsSync(projectsFilePath);
-const DEFAULT_PROJECTS_FILE_CONTENT = JSON.stringify([]);
-const readProjectsFile = () => readFileSync(projectsFilePath).toString();
-const writeToProjectsFile = (content: string) =>
-  writeFileSync(projectsFilePath, Buffer.from(content));
-
-if (!projectsFileExists) writeToProjectsFile(DEFAULT_PROJECTS_FILE_CONTENT);
-
-ipcMain.handle('retrieve-projects', (e) => {
-  e.preventDefault();
-  console.log('fire retrieve-projects');
-  return readProjectsFile();
-});
-
-ipcMain.handle('new-project', async (_, file: string) => {
-  const inputFile: { path: string; content: string; name: string } =
-    JSON.parse(file);
-  const projectsFile = JSON.parse(readProjectsFile());
-  const payload = [...projectsFile, inputFile];
-  try {
-    writeToProjectsFile(JSON.stringify(payload));
-    return 'ok';
-  } catch (error) {
-    return error;
-  }
-});
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -140,7 +117,67 @@ const createWindow = async () => {
  * Add event listeners...
  */
 
+// create a new projects.json file if it doesn't already exist
+const projectsFilePath = app.getPath('documents') + getProjectsFileName();
+const projectsFileExists = existsSync(projectsFilePath);
+const DEFAULT_PROJECTS_FILE_CONTENT = JSON.stringify([]);
+const readProjectsFile = () => readFileSync(projectsFilePath).toString();
+const writeToProjectsFile = (content: string) =>
+  writeFileSync(projectsFilePath, Buffer.from(content));
+
+if (!projectsFileExists) writeToProjectsFile(DEFAULT_PROJECTS_FILE_CONTENT);
+
+const runningShells: { name: string; pid: number }[] = [];
+
+ipcMain.handle('retrieve-projects', (e) => {
+  e.preventDefault();
+  console.log('fire retrieve-projects');
+  return readProjectsFile();
+});
+
+ipcMain.handle('new-project', async (_, file: string) => {
+  const inputFile: { path: string; content: string; name: string } =
+    JSON.parse(file);
+  const projectsFile = JSON.parse(readProjectsFile());
+  const payload = [...projectsFile, inputFile];
+  try {
+    writeToProjectsFile(JSON.stringify(payload));
+    return 'ok';
+  } catch (error) {
+    return error;
+  }
+});
+
+ipcMain.handle('start-project', async (e, file: ProjectFile[]) => {
+  const { content, path: filePath, name } = file[0];
+  const command = `cd ${getProjectFolderPath(filePath)} && ${content}`;
+  const commandShell = spawn('sh', ['-c', command], {
+    detached: true,
+  });
+  if (commandShell.stdout) {
+    commandShell.stdout.on('data', (data) => {
+      mainWindow?.webContents.send('shell-result', data);
+    });
+  }
+  runningShells.push({ name, pid: commandShell.pid! });
+  commandShell.unref();
+});
+
+ipcMain.handle('kill-shell', async (e, name: string[]) => {
+  const processIdx = runningShells.findIndex(
+    (process) => process.name === name[0],
+  );
+  if (processIdx === -1) {
+    return;
+  }
+  const { pid } = runningShells[processIdx];
+  runningShells.splice(processIdx, 1);
+  // Kill the process group associated with the parent shell process
+  process.kill(-pid, 'SIGTERM');
+});
+
 app.on('window-all-closed', () => {
+  runningShells.forEach(({ pid }) => process.kill(-pid, 'SIGTERM'));
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
   if (process.platform !== 'darwin') {
