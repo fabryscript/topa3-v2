@@ -107,7 +107,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",
     "strip-ansi": "^7.1.0",
-    "zustand": "^4.4.1"
+    "zustand": "^4.5.0"
   },
   "devDependencies": {
     "@electron/notarize": "^2.1.0",
