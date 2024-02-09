@@ -7,6 +7,7 @@ interface IButtonProps {
   label?: string;
   onClick?: () => void;
   className?: string;
+  isDisabled?: boolean;
 }
 
 export default function Button({
@@ -15,6 +16,7 @@ export default function Button({
   label,
   className,
   children,
+  isDisabled,
 }: PropsWithChildren<IButtonProps>) {
   return (
     <button
@@ -28,9 +30,11 @@ export default function Button({
             variant === 'secondary',
           'hover:bg-neutral-700 transition-colors text-neutral-200':
             variant === 'ghost',
+          'opacity-70 hover:cursor-not-allowed': isDisabled,
         },
         className,
       )}
+      disabled={isDisabled}
       onClick={onClick}
     >
       {label || children}
