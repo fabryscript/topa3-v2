@@ -31,14 +31,11 @@ function Dashboard() {
           Ecco i tuoi progetti
         </h2>
       </div>
-      <div className="flex flex-row items-center">
-        {projects && (
-          <div>
-            {projects.map((project) => (
-              <ProjectCard key={project.name} project={project} />
-            ))}
-          </div>
-        )}
+      <div className="grid grid-cols-4 gap-3">
+        {projects &&
+          projects.map((project) => (
+            <ProjectCard key={project.name} project={project} />
+          ))}
         <UploadBox />
       </div>
       <FloatingTerminalButton />
