@@ -31,7 +31,7 @@ function Dashboard() {
           Ecco i tuoi progetti
         </h2>
       </div>
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-4 gap-3 min-h-[200px]">
         {projects &&
           projects.map((project) => (
             <ProjectCard key={project.name} project={project} />
