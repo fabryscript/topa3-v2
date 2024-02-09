@@ -96,12 +96,15 @@
     }
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.18",
+    "classnames": "^2.5.1",
+    "date-fns": "^3.3.1",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
     "electron-updater": "^6.1.4",
+    "lucide-react": "^0.323.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.11.0",
     "react-router-dom": "^6.16.0",
     "strip-ansi": "^7.1.0",
     "zustand": "^4.4.1"
