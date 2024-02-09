@@ -36,7 +36,7 @@ function ProjectCard({ project }: { project: ProjectFile }) {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-neutral-400 rounded-md bg-neutral-500 shadow-lg ring-1 ring-black/5 focus:outline-none">
+            <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-neutral-500 shadow-lg ring-1 ring-black/5 focus:outline-none">
               <div className="px-1 py-1">
                 <Menu.Item>
                   {({ active }) => (
@@ -44,10 +44,10 @@ function ProjectCard({ project }: { project: ProjectFile }) {
                       type="button"
                       className={`${
                         active ? 'bg-blue-400 text-white' : 'text-gray-100'
-                      } group flex gap-2 w-full items-center rounded-md px-2 py-2 text-sm transition-colors duration-200 ease-in-out`}
+                      } group flex gap-2 w-full items-center rounded-md px-2 py-2 text-sm transition-colors`}
                     >
                       <Trash className="h-5 w-5" />
-                      Delete
+                      Cancella
                     </button>
                   )}
                 </Menu.Item>
@@ -75,7 +75,7 @@ function ProjectCard({ project }: { project: ProjectFile }) {
         }
       >
         <Play
-          className={classNames('transition-all duration-200 ease-in-out', {
+          className={classNames('transition-all', {
             'w-[18px] opacity-100': isHovered,
             'w-0 opacity-0': !isHovered,
           })}
