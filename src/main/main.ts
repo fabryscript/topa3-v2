@@ -155,9 +155,14 @@ ipcMain.handle('start-project', async (e, file: ProjectFile[]) => {
   const commandShell = spawn('sh', ['-c', command], {
     detached: true,
   });
+  const decoder = new TextDecoder('utf-8');
+
   if (commandShell.stdout) {
     commandShell.stdout.on('data', (data) => {
-      mainWindow?.webContents.send('shell-result', data);
+      mainWindow?.webContents.send('shell-result', {
+        name,
+        out: decoder.decode(data),
+      });
     });
   }
   runningShells.push({ name, pid: commandShell.pid! });
