@@ -1,27 +1,33 @@
 import { useEffect, useState } from 'react';
 import { Upload } from 'lucide-react';
+import classNames from 'classnames';
 import { getWorkspaceFolderName } from '../utils';
+import Button from './button/Button';
 
 function UploadBox() {
   const [filesInfo, setFilesInfo] = useState<File>();
-  const [canDisplayNextStep, setCanDisplayNextStep] = useState(false);
   const [initialAnimationTrigger, setInitialAnimationTrigger] = useState(false);
   const [isFileInvalid, setIsFileInvalid] = useState(false);
   useEffect(() => setInitialAnimationTrigger(true), []);
+
   return (
-    <div className="flex flex-col">
+    <>
       {!filesInfo && (
         <div
-          className={`${
-            initialAnimationTrigger ? 'opacity-100' : 'opacity-0'
-          } transition-opacity duration-1000 flex flex-col gap-5 px-10`}
+          className={classNames(
+            `transition-translate duration-1000 flex flex-col gap-5 px-10`,
+            {
+              'translate-x-0': initialAnimationTrigger,
+              'translate-x-10': !initialAnimationTrigger,
+            },
+          )}
         >
           <label htmlFor="file-upload">
-            <div className="flex flex-col gap-2 justify-center items-center min-h-[200px] px-10 border-4 rounded-2xl border-dashed opacity-60 hover:opacity-80 transition-opacity duration-200 ease-in-out">
+            <div className="flex flex-col gap-2 justify-center items-center min-h-[200px] px-10 border-4 rounded-2xl border-dashed hover:cursor-pointer">
               <Upload className="w-11 h-auto" />
-              <p className="whitespace-nowrap">
+              <span className="whitespace-nowrap">
                 Carica file <code>_topa3</code>
-              </p>
+              </span>
             </div>
             <input
               type="file"
@@ -36,7 +42,6 @@ function UploadBox() {
                     return;
                   }
                   setFilesInfo(files[0]);
-                  setCanDisplayNextStep(true);
                 }
               }}
             />
@@ -52,18 +57,13 @@ function UploadBox() {
         </div>
       )}
       {filesInfo && (
-        <div
-          className={`${
-            canDisplayNextStep ? 'opacity-100' : 'opacity-0'
-          } transition-opacity duration-500 flex flex-col justify-center items-center gap-5`}
-        >
+        <div className="flex flex-col justify-center items-center gap-5 hover:cursor-pointer">
           <p className="text-lg opacity-50">Stai per importare il progetto</p>
           <code>{getWorkspaceFolderName(filesInfo!.path)}</code>
           <p className="text-lg opacity-50">Vuoi confermare?</p>
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              className="inline-flex items-center py-2 px-4 bg-blue-200 rounded-2xl text-neutral-800"
+            <Button
+              variant="primary"
               onClick={async () => {
                 window.electron.ipcRenderer
                   .invoke('new-project', [
@@ -85,18 +85,14 @@ function UploadBox() {
               }}
             >
               <p>Sì, confermo</p>
-            </button>
-            <button
-              type="button"
-              className="inline-flex items-center py-2 px-4 border-blue-200 border rounded-2xl text-neutral-200"
-              onClick={() => setFilesInfo(undefined)}
-            >
+            </Button>
+            <Button variant="secondary" onClick={() => setFilesInfo(undefined)}>
               <p>No, cancella</p>
-            </button>
+            </Button>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
