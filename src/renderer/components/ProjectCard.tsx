@@ -42,9 +42,10 @@ function ProjectCard({ project }: { project: ProjectFile }) {
                   {({ active }) => (
                     <button
                       type="button"
-                      className={`${
-                        active ? 'bg-blue-400 text-white' : 'text-gray-100'
-                      } group flex gap-2 w-full items-center rounded-md px-2 py-2 text-sm transition-colors`}
+                      className={classNames(
+                        `group flex gap-2 w-full items-center text-gray-100 rounded-md px-2 py-2 text-sm transition-colors`,
+                        { 'bg-blue-400 text-white': active },
+                      )}
                     >
                       <Trash className="h-5 w-5" />
                       Cancella
